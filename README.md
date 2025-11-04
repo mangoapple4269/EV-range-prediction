@@ -13,6 +13,3 @@ This project predicts the estimated range of electric vehicles based on specific
 2. Ensure all required Python packages are installed (pandas, seaborn, scikit-learn).
 3. Run the notebook step by step to perform analysis and predictions.
 
-## Author
-
-Mango Apple
