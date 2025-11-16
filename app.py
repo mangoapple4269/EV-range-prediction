@@ -67,7 +67,7 @@ if st.button("Send"):
                 max_tokens=200
             )
 
-            bot_reply = response.choices[0].message["content"]
+            bot_reply = response.choices[0].message.content
             st.session_state.messages.append(("Bot", bot_reply))
 
         except Exception as e:
