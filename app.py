@@ -58,7 +58,7 @@ if st.button("Send"):
 
         try:
             response = client.chat.completions.create(
-                model="llama3-8b-8192",
+                model="llama3-8b",
                 messages=[
                     {"role": "system", "content": "You are a helpful EV expert assistant."},
                     {"role": "user", "content": user_msg}
