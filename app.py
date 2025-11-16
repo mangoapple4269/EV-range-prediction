@@ -56,17 +56,22 @@ if st.button("Send"):
     if user_msg.strip():
         st.session_state.messages.append(("You", user_msg))
 
-        # Stable Groq Model
-        response = client.chat.completions.create(
-            model="llama3-8b-8192",
-            messages=[
-                {"role": "system", "content": "You are a helpful EV expert assistant."},
-                {"role": "user", "content": user_msg}
-            ]
-        )
+        try:
+            response = client.chat.completions.create(
+                model="llama3-8b-8192",
+                messages=[
+                    {"role": "system", "content": "You are a helpful EV expert assistant."},
+                    {"role": "user", "content": user_msg}
+                ],
+                temperature=0.5,
+                max_tokens=200
+            )
 
-        bot_reply = response.choices[0].message["content"]
-        st.session_state.messages.append(("Bot", bot_reply))
+            bot_reply = response.choices[0].message["content"]
+            st.session_state.messages.append(("Bot", bot_reply))
+
+        except Exception as e:
+            st.error(f"Chatbot Error: {e}")
 
 with st.container():
     for speaker, msg in st.session_state.messages:
