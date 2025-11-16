@@ -6,7 +6,7 @@ from openai import OpenAI
 # Load Model
 model = joblib.load("model.pkl")
 
-# Groq Client (NOT OpenAI company, only same API format)
+# Groq Client
 client = OpenAI(
     api_key=st.secrets["GROQ_API_KEY"],
     base_url="https://api.groq.com/openai/v1"
@@ -19,13 +19,13 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("⚡ EV Range Predictor & EV Assistant Chatbot")
-st.write("Predict EV range and ask questions using the AI chatbot powered by Groq (free).")
+st.title("EV Range Predictor & EV Assistant Chatbot")
+st.write("EV range prediction and chatbot assistance.")
 
 # =============================
 #     EV RANGE PREDICTION
 # =============================
-st.subheader("🔋 EV Range Prediction")
+st.subheader("EV Range Prediction")
 
 with st.container():
     col1, col2 = st.columns(2)
@@ -37,16 +37,15 @@ with st.container():
     with col2:
         battery_capacity = st.number_input("Battery Capacity (kWh)", value=50.0)
 
-    if st.button("🚗 Predict EV Range"):
+    if st.button("Predict Range"):
         X = np.array([[top_speed, battery_capacity, torque]])
         pred = model.predict(X)[0]
-        st.success(f"Estimated Range: **{pred:.2f} km**")
-
+        st.success(f"Estimated Range: {pred:.2f} km")
 
 # =============================
 #        CHATBOT SECTION
 # =============================
-st.subheader("🤖 Chat with EV Assistant")
+st.subheader("Chat with EV Assistant")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -57,9 +56,9 @@ if st.button("Send"):
     if user_msg.strip():
         st.session_state.messages.append(("You", user_msg))
 
-        # Groq Chat Completion
+        # Stable Groq Model
         response = client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model="llama3-8b-8192",
             messages=[
                 {"role": "system", "content": "You are a helpful EV expert assistant."},
                 {"role": "user", "content": user_msg}
@@ -69,11 +68,6 @@ if st.button("Send"):
         bot_reply = response.choices[0].message["content"]
         st.session_state.messages.append(("Bot", bot_reply))
 
-# Display Chat Messages
 with st.container():
     for speaker, msg in st.session_state.messages:
-        if speaker == "You":
-            st.markdown(f"**🧑 You:** {msg}")
-        else:
-            st.markdown(f"**🤖 Bot:** {msg}")
-
+        st.markdown(f"**{speaker}:** {msg}")
